@@ -1,4 +1,7 @@
 from django.conf.urls import patterns, include, url
+
+from django.conf.urls.defaults import *
+
 from gllaunch.views import *
 
 # Uncomment the next two lines to enable the admin:
