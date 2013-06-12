@@ -10,6 +10,7 @@ from gllaunch.views import *
 
 urlpatterns = patterns('',
     url(r'^gllaunch/echo_test/', echo_LTI_vars),
+    url(r'^gllaunch/toolLaunch/', echo_LTI_vars),
     # Examples:
     # url(r'^$', 'glservice.views.home', name='home'),
     # url(r'^glservice/', include('glservice.foo.urls')),
