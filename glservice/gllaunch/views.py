@@ -6,6 +6,7 @@ from django.template.loader import get_template
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def echo_LTI_vars(request):
     s = "<html><body>"
     s += "<h1>List of request params</h1>"
