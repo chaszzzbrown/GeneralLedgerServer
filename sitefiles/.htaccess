@@ -1,0 +1,12 @@
+
+RewriteEngine On
+RewriteBase /
+RewriteRule ^$ - [L]
+RewriteRule ^(index.html)$ - [L]
+RewriteRule ^(crossdomain.xml)$ - [L]
+RewriteRule ^(includes/.*)$ - [L]
+RewriteRule ^(uploads/.*)$ - [L]
+RewriteRule ^(media/.*)$ - [L]
+RewriteRule ^(static/.*)$ - [L]
+RewriteCond %{REQUEST_URI} !(django.fcgi)
+RewriteRule ^(.*)$ django.fcgi/$1 [L]

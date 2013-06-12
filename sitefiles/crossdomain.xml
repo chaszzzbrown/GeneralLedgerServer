@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<!-- Example Cross Domain Policy File -->
+
+<!-- http://www.dv8flasher.com/crossdomain.xml -->
+
+<cross-domain-policy>
+
+	<allow-access-from domain="*" />
+	<allow-access-from domain="*.alleni.com" />
+	<allow-access-from domain="*.chasbrown.com" />
+
+</cross-domain-policy>
