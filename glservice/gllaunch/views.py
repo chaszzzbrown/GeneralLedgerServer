@@ -6,6 +6,15 @@ from django.template.loader import get_template
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
+def CorsHttpResponse(response):
+    httpResponse = HttpResponse(response)
+    httpResponse['Access-Control-Allow-Origin'] = '*'
+    httpResponse['Access-Control-Max-Age'] = '120'
+    httpResponse['Access-Control-Allow-Credentials'] = 'true'
+    httpResponse['Access-Control-Allow-Methods'] = 'HEAD,GET,OPTIONS,POST,DELETE'
+    httpResponse['Access-Control-Allow-Headers'] = 'origin,content-type,accept,x-requested-with'
+    return httpResponse    
+
 @csrf_exempt
 def echo_LTI_vars(request):
     s = "<html><body>"
@@ -18,4 +27,4 @@ def echo_LTI_vars(request):
         s += "<li>"+k+":"+v+"<//li>"
     s += "</ul>"
     s+="</body></html>"
-    return HttpResponse(s)
+    return CorsHttpResponse(s)
