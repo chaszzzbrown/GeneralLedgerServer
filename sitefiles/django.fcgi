@@ -1,4 +1,4 @@
-#!/home/ch/chasbrown.com/local/bin/python
+#!/home/re/redhillstudios.com/private-python/bin/python
 import sys, os
 
 # Add a custom Python path.
