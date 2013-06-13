@@ -13,7 +13,7 @@ def CorsHttpResponse(response):
     httpResponse['Access-Control-Allow-Credentials'] = 'true'
     httpResponse['Access-Control-Allow-Methods'] = 'HEAD,GET,OPTIONS,POST,DELETE'
     httpResponse['Access-Control-Allow-Headers'] = 'origin,content-type,accept,x-requested-with'
-    return httpResponse    
+    return httpResponse
 
 @csrf_exempt
 def echo_LTI_vars(request):
