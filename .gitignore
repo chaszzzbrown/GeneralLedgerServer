@@ -1,3 +1,4 @@
+gldata.sqlite
 *.pyc
 *.DS_Store
 *.~*
