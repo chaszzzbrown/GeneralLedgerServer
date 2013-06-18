@@ -1,0 +1,19 @@
+Documentation for General Ledger Service.
+
+The service is broken into two apps:
+
+gllaunch: which handles just the launch part of the operation
+
+gldata: which handles the database api both for ProblemDefinitions, and for SessionData.
+
+gllaunch API:
+
+really, only one URL here:
+
+<home>/gllaunch/launchTool
+
+This is the URL called by TPI as a POST, with a slew of key/value pairs that define what's going on. There's a lot of 
+housekeeping, but for the most part, we look at the 'mode' of the launch:
+
+	if it's 'do', then we check to see if a SessionData based on the unique pair (assignmentid)/(userid). If
+	one exists already, this is a 'resume', so we 
