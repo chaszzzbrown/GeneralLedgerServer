@@ -2,6 +2,7 @@ import json
 from django.db import models
 from datetime import datetime
 from django.utils.timezone import utc
+from gldata.grading import grade
 
 # Create your models here.
 class SessionData(models.Model):
@@ -18,7 +19,20 @@ class SessionData(models.Model):
     
     problem_state_data = models.TextField(default="{}")
                                         # contains the most recently saved student data, encoded as JSON
-                                        
+    @classmethod
+    def constructSessionID(cls, launch_dict):                                    
+        return launch_dict['custom_resource_id']+'__'+launch_dict['user_id']
+    
+    @classmethod
+    def getOrCreateSession(cls, launch_dict):
+        session_id = SessionData.constructSessionID(launch_dict)
+        
+        try:
+            session = SessionData.objects.get(session_id=session_id)
+            return session
+        except SessionData.DoesNotExist:
+            return SessionData.createSession(launch_dict)
+    
     @classmethod
     def createSession(cls, launch_dict):
         '''
@@ -27,9 +41,10 @@ class SessionData(models.Model):
         
         An IntegrityError will be thrown by django if session_id is not not unique.
         '''
+        session_id = SessionData.constructSessionID(launch_dict)
         encoded_dict = json.dumps(launch_dict)
         launch_type = launch_dict['custom_mode']
-        session = SessionData.objects.create(session_id=launch_dict['custom_resource_id']+'&'+launch_dict['user_id'],
+        session = SessionData.objects.create(session_id=session_id,
                                              launch_mode=launch_type,
                                              launch_data=encoded_dict,
                                              course_end_date=datetime.strptime(launch_dict['course_end_date'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=utc))
@@ -62,7 +77,7 @@ class ProblemDefinition(models.Model):
         except AssertionError:
             return False, 0, 'correct_data is not a list of objects for problem_guid:"'+self.problem_guid+'"'
         
-        
+        return grade(student_answers, correct_answers)
         
         
         
