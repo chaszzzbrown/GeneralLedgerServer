@@ -99,6 +99,17 @@ def get_problem_definition(request, problem_guid):
         response = CorsHttpResponse('{"status":"error", "details":"no matching problem_guid for %s"}' % problem_guid, 404)
         return response
     
+    
+    return CorsHttpResponse('{"problem_data":"'+problem.problem_data+'",',
+                            '"correct_data":"'+problem.correct_data+'"}')
+    
+def get_problem(request, problem_guid):
+    try:
+        problem = ProblemDefinition.objects.get(problem_guid=problem_guid)
+    except SessionData.DoesNotExist:
+        response = CorsHttpResponse('{"status":"error", "details":"no matching problem_guid for %s"}' % problem_guid, 404)
+        return response
+    
     return CorsHttpResponse(problem.problem_data)
     
 @csrf_exempt

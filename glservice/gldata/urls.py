@@ -15,6 +15,11 @@ urlpatterns = patterns('',
 
     url(r'^create_problem_definition/(?P<problem_guid>\w+)/', create_problem_definition),
     url(r'^put_problem_definition/(?P<problem_guid>\w+)/', put_problem_definition),
+    url(r'^get_problem_definition/(?P<problem_guid>\w+)/', get_problem_definition),
+    
+    url(r'^get_problem/(?P<problem_guid>\w+)/', get_problem),
+    
+    
     url(r'^grade_problem/(?P<problem_guid>\w+)/', grade_problem),
     url(r'^grade_problem_and_report/(?P<session_id>\w+)/(?P<problem_guid>\w+)/', grade_problem_and_report),
 
