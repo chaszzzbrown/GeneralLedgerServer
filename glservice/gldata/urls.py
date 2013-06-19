@@ -13,15 +13,15 @@ urlpatterns = patterns('',
     url(r'^get_session_data/(?P<session_id>\w+)/', get_session_data),
     url(r'^put_session_state_data/(?P<session_id>\w+)/', put_session_state_data),
 
-    url(r'^create_problem_definition/(?P<problem_guid>\w+)/', create_problem_definition),
-    url(r'^put_problem_definition/(?P<problem_guid>\w+)/', put_problem_definition),
-    url(r'^get_problem_definition/(?P<problem_guid>\w+)/', get_problem_definition),
+    url(r'^create_problem_definition/(?P<problem_guid>[\w\-]+)/', create_problem_definition),
+    url(r'^put_problem_definition/(?P<problem_guid>[\w\-]+)/', put_problem_definition),
+    url(r'^get_problem_definition/(?P<problem_guid>[\w\-]+)/', get_problem_definition),
     
-    url(r'^get_problem/(?P<problem_guid>\w+)/', get_problem),
+    url(r'^get_problem/(?P<problem_guid>[\w\-]+)/', get_problem),
     
     
-    url(r'^grade_problem/(?P<problem_guid>\w+)/', grade_problem),
-    url(r'^grade_problem_and_report/(?P<session_id>\w+)/(?P<problem_guid>\w+)/', grade_problem_and_report),
+    url(r'^grade_problem/(?P<problem_guid>[\w\-]+)/', grade_problem),
+    url(r'^grade_problem_and_report/(?P<session_id>\w+)/(?P<problem_guid>[\w\-]+)/', grade_problem_and_report),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
