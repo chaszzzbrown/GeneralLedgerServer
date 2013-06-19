@@ -3,6 +3,8 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.defaults import *
 
 from gllaunch.views import *
+from gldata.views import *
+
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -10,10 +12,12 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^gllaunch/echo_test/', echo_LTI_vars),
-    url(r'^gllaunch/toolLaunch/', echo_LTI_vars),
+    url(r'^gllaunch/toolLaunch/', tool_launch),
+    
     # Examples:
     # url(r'^$', 'glservice.views.home', name='home'),
-    # url(r'^glservice/', include('glservice.foo.urls')),
+    
+    url(r'^gldata/', include('gldata.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -1,5 +1,7 @@
 # Django settings for glservice project.
 
+APP_REDIRECT_URL = "http://localhost:8080"     # please to exclude trailing slash!!!
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

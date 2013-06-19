@@ -5,6 +5,7 @@ from django.template import Context, Template
 from django.template.loader import get_template
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect
 
 from gldata.models import SessionData
 
@@ -32,9 +33,13 @@ def echo_LTI_vars(request):
 @csrf_exempt
 def tool_launch(request):
     
-    launch_data = request.POST.items.copy()
-    
+    launch_data = {}
+    for k,v in request.POST.items():
+        launch_data[k]=v
+
     session = SessionData.getOrCreateSession(launch_data)
+    
+    return redirect(settings.APP_REDIRECT_URL+'/#/'+session.session_id+'/')
     
     
     
