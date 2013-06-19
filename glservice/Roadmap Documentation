@@ -6,14 +6,64 @@ gllaunch: which handles just the launch part of the operation
 
 gldata: which handles the database api both for ProblemDefinitions, and for SessionData.
 
-gllaunch API:
+gllaunch API:---------------------
 
 really, only one URL here:
 
-<home>/gllaunch/launchTool
+<home>/gllaunch/launchTool/
 
-This is the URL called by TPI as a POST, with a slew of key/value pairs that define what's going on. There's a lot of 
-housekeeping, but for the most part, we look at the 'mode' of the launch:
+This is the URL called by TPI as a POST, with a slew of key/value pairs that define what's going on. 
 
-	if it's 'do', then we check to see if a SessionData based on the unique pair (assignmentid)/(userid). If
-	one exists already, this is a 'resume', so we 
+We grab the custom_resultid and user_id, perform an MD5 hash on their concatenation, and use that as the unique session_id.
+
+We get or create a SessionData record using that key; and save ALL of the key/val;ues that were posted to us by TPI.
+
+We then redirect to the APP_REDIRECT_URL in the settings.py file; and go to:
+
+/#/<session_id>/
+
+The app never uses the gllaunch service; all data requests etc. are via the gldata service.
+
+gldata API --------------------------
+
+<home>/get_session_data/<session_id>/
+	method: GET
+	returns a JSON encoded object with attributes:
+		session_id - the session id
+		launch_mode - the launch mode (do, review, etc)
+		launch_data	- dict containing ALL the TPI launch params
+		session_state - initially, an empty object; the app determines what gets put in here.
+		
+<home>/put_session_state_data/<session_id>/
+	method: POST
+	parameters: 
+		session_state
+	
+	Stores the JSON encoded data for the app. Returns an error if it's not valid JSON, else just 'OK'
+
+<home>/create_problem_definition/<problem_guid>/
+	method: POST
+	creates an empty problem definition; Returns an error if this is a duplicate; else OK. Really just for testing;
+	should use put_problem_definition for both creating and editing problems.
+
+<home>/put_problem_definition/<problem_guid>/
+	method: POST
+	parameters:
+		problem_data: JSON encoded object with all the problem data, except for the correct answers.
+		correct_data: JSON encoded array of correct answers
+		
+<home>/put_problem_definition/<problem_guid>/
+	method: GET
+	returns a JSON encoded object with 2 attributes
+		problem_data: JSON encoded object with all the problem data, except for the correct answers.
+		correct_data: JSON encoded array of correct answers
+	Use this ONLY during authoring; student should not be able to peek at correct answers!
+
+<home>/get_problem/<problem_guid>/
+	method: GET
+	returns the JSON encoded problem data for the problem.
+
+<home>/grade_problem/<problem_guid>/
+<home>/grade_problem_and_report/<session_id>/<problem_guid>/
+
+	
