@@ -51,15 +51,12 @@ def put_session_state_data(request, session_id):
         return response
     
     try:
-        state_data = json.loads(request.POST['session_state'])
+        json.loads(request.body)
     except ValueError:
         response = CorsHttpResponse('{"status":"error", "details":"session_state is not valid JSON"}', 400)
         return response
-    except KeyError:
-        response = CorsHttpResponse('{"status":"error", "details":"missing required parameter session_state"}', 400)
-        return response
     
-    session.problem_state_data = request.POST['session_state']
+    session.problem_state_data = request.body
     session.save()
     
     return CorsHttpResponse('OK')
@@ -125,11 +122,7 @@ def grade_problem(request, problem_guid):
         response = CorsHttpResponse('{"status":"error", "details":"no matching problem_guid for %s"}' % problem_guid, 404)
         return response
 
-    try:
-        student_data = request.POST['student_data']
-    except KeyError:
-        return CorsHttpResponse('{"status":"error", "details":"missing required parameter student_data"}', 400)
-    
+    student_data = request.body    
     valid, result = problem.grade_response(student_data)
     
     return CorsHttpResponse(result, 200 if valid else 400)
