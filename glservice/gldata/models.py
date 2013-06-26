@@ -102,8 +102,8 @@ class ProblemDefinition(models.Model):
         result['transactionsCorrect']=transactionsCorrect
         result['transactionsIncorrect']=transactionsIncorrect
         result['expectedTransactions']=expectedTransactions
-        
-        return True, json.dumps(rowStatus)
+
+        return True, json.dumps(result)
         
         
         

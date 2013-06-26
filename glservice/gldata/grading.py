@@ -32,11 +32,11 @@ student_answers = [
 def collect_transactions(entry_list):
     transactions = defaultdict(list)
     for idx, entry in enumerate(entry_list):
-        transactions[entry['transaction']].append({'entry':entry, 'row':idx})
+        transactions[entry['transactionId']].append({'entry':entry, 'row':idx})
     return transactions.values()
 
 def entriesMatch(e1, e2):
-    for k in ['date', 'account', 'debit', 'credit']:
+    for k in ['date', 'account', 'amount']:
         if e1[k]!=e2[k]:
             return False
     return True
