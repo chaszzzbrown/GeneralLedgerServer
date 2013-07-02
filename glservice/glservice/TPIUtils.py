@@ -5,6 +5,8 @@ Created on Jun 12, 2013
 '''
 
 import datetime
+import uuid
+import cgi
 from string import Template
 
 # for testing; example TPI launch data...
@@ -58,85 +60,90 @@ TEST_TPI_PARAMS = {
         'user_id': 'urn:udson:pearson.com/xl/devdb:user/35870',
     }
 
+TEST_EXTRA_PARAMS = {
+    'transactionId': uuid.uuid4(),
+    'timeStamp': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
+    'custom_originating_parner': 'GL',
+    'score': 7,
+    'problem_guid': 'GL0001',
+    'problemNumber': 1,
+    'duration': 700,
+    'submissionCount': 1
+}
 
 WRAPPER_TEMPLATE = '''
-
-<tos:outcomeMessage xsi:schemaLocation="http://www.pearson.com/xsd/tpiOutcomesService_v1p0 tpiOutcomesService_v1p0.xsd"
-xsi:type="tos:OutcomeMessage.Type" xmlns:cor="http://www.imsglobal.org/services/lti/xsd/CoreOutcomesService_bv1p0"
-xmlns:tos="http://www.pearson.com/xsd/tpiOutcomesService_v1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<tos:outcomeMessage xsi:schemaLocation="http://www.pearson.com/xsd/tpiOutcomesService_v1p0 tpiOutcomesService_v1p0.xsd" xsi:type="tos:OutcomeMessage.Type" xmlns:cor="http://www.imsglobal.org/services/lti/xsd/CoreOutcomesService_bv1p0" xmlns:tos="http://www.pearson.com/xsd/tpiOutcomesService_v1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <tos:messageInfo>
       <tos:dataSource>${custom_tool_proxy_guid}</tos:dataSource>
       <tos:dataSourceName>${custom_originating_partner}</tos:dataSourceName>
       <tos:transactionId>${transactionId}</tos:transactionId>
       <tos:timestamp>$timeStamp</tos:timestamp>
-      <tos:partnerId>${custom_partner_id}</tos:partnerId>
+      <tos:partnerId>${custom_partnerId}</tos:partnerId>
       <tos:institutionId>${custom_institutionId}</tos:institutionId>
-      <tos:contextIdentifier>$contextId</tos:contextIdentifier>
+      <tos:contextIdentifier>$context_id</tos:contextIdentifier>
    </tos:messageInfo>
    $messageBody
- </tos:outcomeMessage>
- '''
+</tos:outcomeMessage>
+'''
 
 REPLACE_RESULT_TEMPLATE = '''
    <cor:replaceResultRequest>
-      <cor:sourcedId>b53f0a9c-1c0d-489e-a361-d148eb5ea33e</cor:sourcedId>
+      <cor:sourcedId>${custom_resultid}</cor:sourcedId>
       <cor:resultRecord>
-         <cor:sourcedId>b53f0a9c-1c0d-489e-a361-d148eb5ea33e</cor:sourcedId>
+         <cor:sourcedId>${custom_resultid}</cor:sourcedId>
          <cor:result>
             <cor:statusofResult>
                <cor:displayName>Quiz</cor:displayName>
             </cor:statusofResult>
-            <cor:personSourcedId>a1df4b66-7930-4330-be14-03d52d74dda1_sakai_unicon</cor:personSourcedId>
-            <cor:lineItemSourcedId>d4ea086e-b904-4dc5-b1b0-955a1c245497</cor:lineItemSourcedId>
-            <cor:date>2010-08-31T12:34:18</cor:date>
+            <cor:personSourcedId>${user_id}</cor:personSourcedId>
+            <cor:lineItemSourcedId>${custom_resource_id}</cor:lineItemSourcedId>
+            <cor:date>${timeStamp}</cor:date>
             <cor:resultScore>
                <cor:language>en-US</cor:language>
-               <cor:textString>7</cor:textString>
+               <cor:textString>${score}</cor:textString>
             </cor:resultScore>
-            <cor:dataSource>f3ab6f04-f7d3-4375-b274-60f4576d960f</cor:dataSource>
+            <cor:dataSource>${custom_tool_proxy_guid}</cor:dataSource>
+            <cor:extension>
+                <cor:extensionField>
+                    <cor:fieldName>resultDetail</cor:fieldName>
+                    <cor:fieldType>any</cor:fieldType>
+                    <cor:fieldValue>${extensionBody}</cor:fieldValue>
+                </cor:extensionField>
+                <cor:extensionField>
+                    <cor:fieldName>messageDate</cor:fieldName>
+                    <cor:fieldType>any</cor:fieldType>
+                    <cor:fieldValue>$timeStamp</cor:fieldValue>
+                </cor:extensionField>
+            </cor:extension>
          </cor:result>
       </cor:resultRecord>
    </cor:replaceResultRequest>
 '''
 
-DATA_SOURCE_GUID = 'f3ab6f04-f7d3-4375-b274-60f4576d960f'
-DATA_SOURCE_NAME = 'accountingXL'
-PARTNER_ID = 'redhill'
-INSTITUTION_ID = 'accounting'
-
-class OutcomeWrapper:
-    
-    def __init__(self, transactionId, contextIdentifier):
-        self.timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
-        self.transactionId = transactionId
-        self.contextIdentifier = contextIdentifier
-        self.content = []
-        pass
-    
-    def asStrippedXML(self):
-        return self.asXML().replace('\n','').replace('\t', '')
-    
-    def asXML(self):
-        contentXML = ''
-        if (self.content):
-            for block in self.content:
-                contentXML += block.asXML+'\n\n'
-        result = Template(WRAPPER_TEMPLATE)
-        result = result.substitute(sourceGuid=DATA_SOURCE_GUID,
-                                   sourceName=DATA_SOURCE_NAME,
-                                   transactionId=self.transactionId,
-                                   timeStamp=self.timestamp,
-                                   partnerId=PARTNER_ID,
-                                   institutionId=INSTITUTION_ID,
-                                   contextId=self.contextIdentifier,
-                                   messageBody=contentXML
-                                   )
-        return result
+SIMPLE_ITEM_RESULT_TEMPLATE = '''
+<?xml version="1.0" encoding="utf-16"?>
+<resultDetails xmlns:psr="http://www.pearson.com/services/SimpleResults/data/v1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:psa="http://www.pearson.com/services/SimpleAssessment/data/v1p0" xmlns:tos="http://www.pearson.com/xsd/tpiOutcomesService_v1p0" xmlns:cor="http://www.imsglobal.org/services/lti/xsd/CoreOutcomesService_bv1p0">
+    <psr:totalDuration></psr:totalDuration>
+    <psr:parts>
+        <psr:simpleSectionResult>
+            <psr:parts>
+              <psr:simpleItemResult>
+                  <psr:itemBindingId>problem_guid</psr:itemBindingId>
+                  <psr:itemId>${problemNumber}</psr:itemId>
+                  <psr:itemScore>${score}</psr:itemScore>
+                  <psr:duration>${duration}</psr:duration>
+                  <psr:submissionCount>${submissionCount}</psr: submissionCount>
+              </psr:simpleItemResult>
+            </psr:parts>
+        </psr:simpleSectionResult>
+    </psr:parts>
+</resultDetails>
+'''
 
 if __name__ == '__main__':
-    wrapper = OutcomeWrapper(15, 'abcd-87654-123748')
-    f = open('textout.xml', 'w')
-    f.write(wrapper.asStrippedXML())
-    f.close()
-    
-    
+    params = TEST_TPI_PARAMS
+    params.update(TEST_EXTRA_PARAMS)
+    params['extensionBody'] = cgi.escape(Template(SIMPLE_ITEM_RESULT_TEMPLATE).substitute(params))
+    params['messageBody'] = Template(REPLACE_RESULT_TEMPLATE).substitute(params)
+    result = Template(WRAPPER_TEMPLATE).substitute(params)
+    print result
