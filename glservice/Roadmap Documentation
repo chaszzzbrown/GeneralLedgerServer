@@ -59,6 +59,10 @@ gldata API --------------------------
 		correct_data: JSON encoded array of correct answers
 	Use this ONLY during authoring; student should not be able to peek at correct answers!
 
+<home>/get_problem_list/
+	method: GET
+	returns a JSON array of problem guids and titles
+
 <home>/get_problem/<problem_guid>/
 	method: GET
 	returns the JSON encoded problem data for the problem.

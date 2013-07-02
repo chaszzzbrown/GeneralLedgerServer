@@ -100,6 +100,18 @@ def get_problem_definition(request, problem_guid):
     
     return CorsHttpResponse('{"problem_data":"'+problem.problem_data+'",',
                             '"correct_data":"'+problem.correct_data+'"}')
+
+def get_problem_list(request):
+    try:
+        problems = ProblemDefinition.objects.all()
+    except SessionData.DoesNotExist:
+        problems = [];
+
+    def problem_data(p):
+        jso = json.loads(p.problem_data)
+        return {'guid': p.problem_guid, 'title': jso['title']}
+
+    return CorsHttpResponse(json.dumps([problem_data(p) for p in problems]))
     
 def get_problem(request, problem_guid):
     try:
