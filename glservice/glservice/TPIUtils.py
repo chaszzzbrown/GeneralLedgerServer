@@ -114,9 +114,9 @@ TEST_TPI_PARAMS = {
 
 TEST_EXTRA_PARAMS = {
     'transactionId': uuid.uuid4(),
+    'dataSourceName': 'GL',
     'timeStamp': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
-    'custom_originating_parner': 'GL',
-    'score': 7,
+    'score': 1,
     'problem_guid': 'GL0001',
     'problemNumber': 1,
     'duration': 700,
@@ -127,7 +127,7 @@ WRAPPER_TEMPLATE = '''
 <tos:outcomeMessage xsi:schemaLocation="http://www.pearson.com/xsd/tpiOutcomesService_v1p0 tpiOutcomesService_v1p0.xsd" xsi:type="tos:OutcomeMessage.Type" xmlns:cor="http://www.imsglobal.org/services/lti/xsd/CoreOutcomesService_bv1p0" xmlns:tos="http://www.pearson.com/xsd/tpiOutcomesService_v1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <tos:messageInfo>
       <tos:dataSource>${custom_tool_proxy_guid}</tos:dataSource>
-      <tos:dataSourceName>${custom_originating_partner}</tos:dataSourceName>
+      <tos:dataSourceName>${dataSourceName}</tos:dataSourceName>
       <tos:transactionId>${transactionId}</tos:transactionId>
       <tos:timestamp>$timeStamp</tos:timestamp>
       <tos:partnerId>${custom_partnerId}</tos:partnerId>
@@ -145,7 +145,8 @@ REPLACE_RESULT_TEMPLATE = '''
          <cor:sourcedId>${custom_resultid}</cor:sourcedId>
          <cor:result>
             <cor:statusofResult>
-               <cor:displayName>Quiz</cor:displayName>
+               <cor:handle>complete</cor:handle>
+               <cor:displayName>complete</cor:displayName>
             </cor:statusofResult>
             <cor:personSourcedId>${user_id}</cor:personSourcedId>
             <cor:lineItemSourcedId>${custom_resource_id}</cor:lineItemSourcedId>
@@ -180,11 +181,11 @@ SIMPLE_ITEM_RESULT_TEMPLATE = '''
         <psr:simpleSectionResult>
             <psr:parts>
               <psr:simpleItemResult>
-                  <psr:itemBindingId>problem_guid</psr:itemBindingId>
+                  <psr:itemBindingId>${problem_guid}</psr:itemBindingId>
                   <psr:itemId>${problemNumber}</psr:itemId>
                   <psr:itemScore>${score}</psr:itemScore>
                   <psr:duration>${duration}</psr:duration>
-                  <psr:submissionCount>${submissionCount}</psr: submissionCount>
+                  <psr:submissionCount>${submissionCount}</psr:submissionCount>
               </psr:simpleItemResult>
             </psr:parts>
         </psr:simpleSectionResult>
