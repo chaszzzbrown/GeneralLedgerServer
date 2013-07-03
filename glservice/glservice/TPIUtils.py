@@ -144,10 +144,13 @@ SIMPLE_ITEM_RESULT_TEMPLATE = '''
 </resultDetails>
 '''
 
-if __name__ == '__main__':
-    params = TEST_TPI_PARAMS
+
+def outcome_xml(params, extra_params):
     params.update(TEST_EXTRA_PARAMS)
     params['extensionBody'] = cgi.escape(Template(SIMPLE_ITEM_RESULT_TEMPLATE).substitute(params))
     params['messageBody'] = Template(REPLACE_RESULT_TEMPLATE).substitute(params)
-    result = Template(WRAPPER_TEMPLATE).substitute(params)
-    print result
+    return Template(WRAPPER_TEMPLATE).substitute(params)
+
+
+if __name__ == '__main__':
+    print outcome_xml(TEST_TPI_PARAMS, TEST_EXTRA_PARAMS)
