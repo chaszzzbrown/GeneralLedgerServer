@@ -1,6 +1,10 @@
 # Django settings for glservice project.
 
+LAUNCH_METHOD = 'POST'
+LAUNCH_URL = 'http://gldata.redhillstudios.com/gllaunch/toolLaunch/'
+TPI_SHARED_SECRET = "test"
 APP_REDIRECT_URL = "http://ledger.redhillstudios.com/deliverables/generalLedger"     # please to exclude trailing slash!!!
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

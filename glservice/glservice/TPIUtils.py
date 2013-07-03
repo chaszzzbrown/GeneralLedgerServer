@@ -7,7 +7,14 @@ Created on Jun 12, 2013
 import datetime
 import uuid
 import cgi
+import hmac
+import binascii
+import urllib
+import hashlib
+
 from string import Template
+
+from django.conf import settings
 
 # for testing; example TPI launch data...
 TEST_TPI_PARAMS = {
@@ -152,5 +159,39 @@ def outcome_xml(params, extra_params):
     return Template(WRAPPER_TEMPLATE).substitute(params)
 
 
+def oauth_sig(method, url, params):
+    # If you dont have a token yet, the key should be only "CONSUMER_SECRET&"
+    key = settings.TPI_SHARED_SECRET + '&'
+
+    def quote(s):
+        return urllib.quote(s, '')
+
+    quotedParams = dict(params)
+    print 'oauth_signature:', quotedParams.pop('oauth_signature')
+    print 'params minus oauth_signature:', quotedParams
+    quotedParams = sorted(quotedParams.iteritems(), key=lambda p: p[0])
+    quotedParams = (quote(k) + '=' + quote(v) for (k, v) in quotedParams)
+    quotedParams = quote('&'.join(quotedParams))
+
+    quotedUrl = quote(url)
+
+    raw = '&'.join([method, quotedUrl, quotedParams])
+
+    print 'RAW: ', raw
+
+    hashed = hmac.new(key, raw, hashlib.sha1)
+
+    # The signature
+    return binascii.b2a_base64(hashed.digest())[:-1]
+
+
+def has_valid_signature(params):
+    return params['oauth_signature'] == oauth_sig(settings.LAUNCH_METHOD, settings.LAUNCH_URL, params)
+
+
 if __name__ == '__main__':
-    print outcome_xml(TEST_TPI_PARAMS, TEST_EXTRA_PARAMS)
+    # print outcome_xml(TEST_TPI_PARAMS, TEST_EXTRA_PARAMS)
+    sig = oauth_sig('POST', 'http://gldata.redhillstudios.com/gllaunch/toolLaunch/', TEST_TPI_PARAMS)
+    print 'SIG:', sig
+    for (k, v) in TEST_TPI_PARAMS.iteritems():
+        print k+'='+v

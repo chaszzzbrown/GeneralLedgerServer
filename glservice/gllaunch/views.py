@@ -9,6 +9,8 @@ from django.shortcuts import redirect
 
 from gldata.models import SessionData
 
+from glservice import TPIUtils
+
 def CorsHttpResponse(response):
     httpResponse = HttpResponse(response)
     httpResponse['Access-Control-Allow-Origin'] = '*'
@@ -32,15 +34,12 @@ def echo_LTI_vars(request):
 
 @csrf_exempt
 def tool_launch(request):
-    
     launch_data = {}
     for k,v in request.POST.items():
         launch_data[k]=v
 
-    session = SessionData.getOrCreateSession(launch_data)
-    
-    return redirect(settings.APP_REDIRECT_URL+'/#/'+session.session_id+'/')
-    
-    
-    
-    
+    if TPIUtils.has_valid_signature(launch_data):
+        session = SessionData.getOrCreateSession(launch_data)
+        return redirect(settings.APP_REDIRECT_URL+'/#/'+session.session_id+'/')
+    else:
+        return HttpResponse('Unauthorized', status=401)
