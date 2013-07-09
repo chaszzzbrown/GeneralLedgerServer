@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 
 # for testing purposes...
 correct_answers = [{'date':'date1', 'transaction': 1, 'subTransaction': 0, 'account':"10100 - Cash", 'description':"", 'debit':"59000", 'credit':""},
@@ -55,6 +55,8 @@ def transactionsSubset(t1, t2):
     return True
     
 def grade(student_answers, correct_answers):
+    Results = namedtuple('Results', ['rowStatus', 'expectedTransactions', 'transactionsCorrect', 'transactionsIncorrect'])
+
     student = collect_transactions(student_answers)
     correct = collect_transactions(correct_answers)
     
@@ -82,7 +84,7 @@ def grade(student_answers, correct_answers):
         for entry in trans1:
             rowStatus[entry['row']] = hasMatch
                       
-    return rowStatus, transactionsCorrect, transactionsIncorrect, expectedTransactions
+    return Results(rowStatus, transactionsCorrect, transactionsIncorrect, expectedTransactions)
 
 if __name__=='__main__':
     print grade(student_answers, correct_answers)

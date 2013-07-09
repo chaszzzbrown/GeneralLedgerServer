@@ -104,15 +104,10 @@ class ProblemDefinition(models.Model):
             raise ValueError("correct_data is not valid JSON for problem_guid:"+self.problem_guid)
         except AssertionError:
             return ValueError("correct_data is not a list of objects for problem_guid:"+self.problem_guid)
-        rowStatus, transactionsCorrect, transactionsIncorrect, expectedTransactions = grade(student_answers, correct_answers)
-        
-        result = {}
-        result['rowStatus']=rowStatus
-        result['transactionsCorrect']=transactionsCorrect
-        result['transactionsIncorrect']=transactionsIncorrect
-        result['expectedTransactions']=expectedTransactions
 
-        return result
+        result = grade(student_answers, correct_answers)
+        
+        return result._asdict()
         
         
         
