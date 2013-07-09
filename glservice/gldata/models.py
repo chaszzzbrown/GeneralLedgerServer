@@ -21,8 +21,17 @@ class SessionData(models.Model):
                                         # contains the most recently saved student data, encoded as JSON
     @classmethod
     def constructSessionID(cls, launch_dict):
-        # an MD5 on the assignment + user identifiers should be plenty strong enough... 
-        return hashlib.md5(launch_dict['custom_resultid']+'&'+launch_dict['user_id']).hexdigest()
+        def hashFns():
+            yield lambda: launch_dict['custom_resultid']+'&'+launch_dict['user_id']
+            yield lambda: launch_dict['custom_resource_id']+'&'+launch_dict['user_id']
+            yield lambda: launch_dict['custom_target_' + launch_dict['custom_currentquestion']]
+
+        for hash in hashFns():
+            try:
+                return hashlib.md5(hash()).hexdigest()
+            except KeyError:
+                continue
+
 
     @classmethod
     def getOrCreateSession(cls, launch_dict):
