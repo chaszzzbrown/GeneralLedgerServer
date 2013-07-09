@@ -128,16 +128,17 @@ def grade_problem_and_report(request, session_id, problem_guid):
         response = CorsHttpResponse('{"status":"error", "details":"no matching problem_guid for %s"}' % problem_guid, 404)
         return response
 
-    student_data = request.body    
-    valid, result = problem.grade_response(student_data)
+    student_data = request.body
 
-    if not valid:
-        return CorsHttpResponse(result, 400)
-    else:
-        # TODO: score, duration, submissionCount
-        TPIUtils.submit_outcome(launch_data, problem_guid=problem_guid, score=1, duration=700, submissionCount=1)
-        # TODO: test if submission was successful
-        return CorsHttpResponse(result, 200)
+    try:
+        result = problem.grade_response(student_data)
+    except Exception as e:
+        return CorsHttpResponse(str(e), 400)
+
+    # TODO: score, duration, submissionCount
+    TPIUtils.submit_outcome(launch_data, problem_guid=problem_guid, score=1, duration=700, submissionCount=1)
+    # TODO: test if submission was successful
+    return CorsHttpResponse(json.dumps(result), 200)
 
 
 @csrf_exempt
@@ -148,8 +149,11 @@ def grade_problem(request, problem_guid):
         response = CorsHttpResponse('{"status":"error", "details":"no matching problem_guid for %s"}' % problem_guid, 404)
         return response
 
-    student_data = request.body    
-    valid, result = problem.grade_response(student_data)
-    
-    return CorsHttpResponse(result, 200 if valid else 400)
-    
+    student_data = request.body
+
+    try:
+        result = problem.grade_response(student_data)
+    except Exception as e:
+        return CorsHttpResponse(str(e), 400)
+
+    return CorsHttpResponse(json.dumps(result), 200)

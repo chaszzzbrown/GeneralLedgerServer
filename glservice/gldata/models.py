@@ -93,26 +93,26 @@ class ProblemDefinition(models.Model):
             student_answers = json.loads(student_answers_json)
             assert isinstance(student_answers, list)
         except ValueError:
-            return False, '{"status":"error", "details":"student_answers is not valid JSON"}'
+            raise ValueError("student_answers is not valid JSON")
         except AssertionError:
-            return False, '{"status":"error", "details":"student_answers is not a list of objects"}'
+            raise ValueError("student_answers is not a list of objects")
 
         try:
             correct_answers = json.loads(self.correct_data)
             assert isinstance(student_answers, list)
         except ValueError:
-            return False, '{"status":"error", "details":"correct_data is not valid JSON for problem_guid:'+self.problem_guid+'"}'
+            raise ValueError("correct_data is not valid JSON for problem_guid:"+self.problem_guid)
         except AssertionError:
-            return False, '{"status":"error", "details":"correct_data is not a list of objects for problem_guid:'+self.problem_guid+'"}'
-        
+            return ValueError("correct_data is not a list of objects for problem_guid:"+self.problem_guid)
         rowStatus, transactionsCorrect, transactionsIncorrect, expectedTransactions = grade(student_answers, correct_answers)
+        
         result = {}
         result['rowStatus']=rowStatus
         result['transactionsCorrect']=transactionsCorrect
         result['transactionsIncorrect']=transactionsIncorrect
         result['expectedTransactions']=expectedTransactions
 
-        return True, json.dumps(result)
+        return result
         
         
         
