@@ -119,7 +119,7 @@ REPLACE_RESULT_TEMPLATE = '''
                 <cor:extensionField>
                     <cor:fieldName>resultDetail</cor:fieldName>
                     <cor:fieldType>any</cor:fieldType>
-                    <cor:fieldValue>${extensionBody}</cor:fieldValue>
+                    <cor:fieldValue xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">${extensionBody}</cor:fieldValue>
                 </cor:extensionField>
                 <cor:extensionField>
                     <cor:fieldName>messageDate</cor:fieldName>
