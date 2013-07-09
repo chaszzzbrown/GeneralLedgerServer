@@ -151,6 +151,7 @@ SIMPLE_ITEM_RESULT_TEMPLATE = '''
     </psr:parts>
 </resultDetails>
 '''
+SIMPLE_ITEM_RESULT_TEMPLATE = ' '.join(SIMPLE_ITEM_RESULT_TEMPLATE.split())
 
 
 def outcome_xml(params, **extra_params):
