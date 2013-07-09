@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.db import IntegrityError
 
 from gldata.models import SessionData, ProblemDefinition
+from glservice import TPIUtils
 import json
 
 def CorsHttpResponse(response, status=200):
@@ -111,8 +112,33 @@ def get_problem(request, problem_guid):
     
 @csrf_exempt
 def grade_problem_and_report(request, session_id, problem_guid):
-    # ToDo - report result
-    return grade_problem(request, problem_guid)
+    try:
+        session = SessionData.objects.get(session_id=session_id)
+        launch_data = json.loads(session.launch_data)
+    except SessionData.DoesNotExist:
+        response = CorsHttpResponse('{"status":"error", "details":"no matching session_id for %s"}' % session_id, 404)
+        return response
+    except ValueError:
+        response = CorsHttpResponse('{"status":"error", "details":"launch_data is not valid JSON"}', 400)
+        return response
+
+    try:
+        problem = ProblemDefinition.objects.get(problem_guid=problem_guid)
+    except SessionData.DoesNotExist:
+        response = CorsHttpResponse('{"status":"error", "details":"no matching problem_guid for %s"}' % problem_guid, 404)
+        return response
+
+    student_data = request.body    
+    valid, result = problem.grade_response(student_data)
+
+    if not valid:
+        return CorsHttpResponse(result, 400)
+    else:
+        # TODO: score, duration, submissionCount
+        TPIUtils.submit_outcome(launch_data, problem_guid=problem_guid, score=1, duration=700, submissionCount=1)
+        # TODO: test if submission was successful
+        return CorsHttpResponse(result, 200)
+
 
 @csrf_exempt
 def grade_problem(request, problem_guid):

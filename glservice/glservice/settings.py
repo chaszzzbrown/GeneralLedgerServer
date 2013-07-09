@@ -1,9 +1,13 @@
 # Django settings for glservice project.
 
 LAUNCH_METHOD = 'POST'
-LAUNCH_URL = 'http://gldata.redhillstudios.com/gllaunch/toolLaunch/'
+LAUNCH_URL = 'https://gldata.redhillstudios.com/gllaunch/toolLaunch/'
 TPI_SHARED_SECRET = "test"
 APP_REDIRECT_URL = "http://localhost:8080"     # please to exclude trailing slash!!!
+
+OUTCOMES_URL = 'http://cert.isb.lift.pearsoncmg.com/v1/dataexchange/tpi/submit'
+OUTCOMES_USER = 'appuser'
+OUTCOMES_PW = 'appuser1'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

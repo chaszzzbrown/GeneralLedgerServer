@@ -11,6 +11,7 @@ import hmac
 import binascii
 import urllib
 import hashlib
+import requests
 
 from string import Template
 
@@ -152,8 +153,8 @@ SIMPLE_ITEM_RESULT_TEMPLATE = '''
 '''
 
 
-def outcome_xml(params, extra_params):
-    params.update(TEST_EXTRA_PARAMS)
+def outcome_xml(params, **extra_params):
+    params.update(extra_params)
     params['extensionBody'] = cgi.escape(Template(SIMPLE_ITEM_RESULT_TEMPLATE).substitute(params))
     params['messageBody'] = Template(REPLACE_RESULT_TEMPLATE).substitute(params)
     return Template(WRAPPER_TEMPLATE).substitute(params)
@@ -189,9 +190,28 @@ def has_valid_signature(params):
     return params['oauth_signature'] == oauth_sig(settings.LAUNCH_METHOD, settings.LAUNCH_URL, params)
 
 
+def submit_outcome(params, **extra_params):
+    extra_params.update({
+        'transactionId': uuid.uuid4(),
+        'dataSourceName': 'GL',
+        'timeStamp': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
+    })
+    url = settings.OUTCOMES_URL
+    body = outcome_xml(params, **extra_params)
+    auth = (settings.OUTCOMES_USER, settings.OUTCOMES_PW)
+    print 'body:', body
+    resp = requests.post(url, data=body, auth=auth)
+    print 'resp:', resp, resp.content
+    return resp
+
 if __name__ == '__main__':
     # print outcome_xml(TEST_TPI_PARAMS, TEST_EXTRA_PARAMS)
-    sig = oauth_sig('POST', 'http://gldata.redhillstudios.com/gllaunch/toolLaunch/', TEST_TPI_PARAMS)
-    print 'SIG:', sig
-    for (k, v) in TEST_TPI_PARAMS.iteritems():
-        print k+'='+v
+    # sig = oauth_sig('POST', 'http://gldata.redhillstudios.com/gllaunch/toolLaunch/', TEST_TPI_PARAMS)
+    # print 'SIG:', sig
+    # for (k, v) in TEST_TPI_PARAMS.iteritems():
+    #     print k+'='+v
+    url = settings.OUTCOMES_URL
+    body = outcome_xml(TEST_TPI_PARAMS, **TEST_EXTRA_PARAMS)
+    print 'body:', body
+    resp = requests.post(url, data=body, auth=(settings.OUTCOMES_USER, settings.OUTCOMES_PW))
+    print 'resp:', resp, resp.content
