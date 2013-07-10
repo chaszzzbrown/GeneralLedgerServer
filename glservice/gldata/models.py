@@ -1,3 +1,4 @@
+import re
 import json
 from django.db import models
 from datetime import datetime
@@ -69,6 +70,22 @@ class SessionData(models.Model):
                                              course_end_date=end_date)
         session.save()
         return session
+
+    def problem_assignment_info(self, guid):
+        'Returns problem number and total points'
+        # turn launch_data into a python dictionary
+        launch_dict = json.loads(self.launch_data)
+        # find out which problem number matches the guid for this assignment
+        for k, v in launch_dict.iteritems():
+            m = re.match('custom_target_(\d+)', k)
+            if not m:
+                continue
+            if v != guid:
+                continue
+            pnum = m.group(1)
+            points = int(launch_dict['custom_points_' + pnum])
+            return (pnum, points)
+        return None
 
     def __unicode__(self):
         return self.session_id
