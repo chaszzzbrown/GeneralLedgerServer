@@ -55,7 +55,7 @@ def transactionsSubset(t1, t2):
     return True
     
 def grade(student_answers, correct_answers):
-    Results = namedtuple('Results', ['rowStatus', 'expectedTransactions', 'transactionsCorrect', 'transactionsIncorrect'])
+    Results = namedtuple('Results', ['rowStatus', 'expectedTransactions', 'transactionsCorrect', 'transactionsIncorrect', 'score'])
 
     student = collect_transactions(student_answers)
     correct = collect_transactions(correct_answers)
@@ -83,8 +83,13 @@ def grade(student_answers, correct_answers):
 
         for entry in trans1:
             rowStatus[entry['row']] = hasMatch
-                      
-    return Results(rowStatus, transactionsCorrect, transactionsIncorrect, expectedTransactions)
+            
+    if len(student_answers) <= len(correct_answers):
+        score = float(transactionsCorrect) / len(correct_answers)
+    else:
+        score = max(0, float(transactionsCorrect - transactionsIncorrect)) / len(correct_answers)
+
+    return Results(rowStatus, transactionsCorrect, transactionsIncorrect, expectedTransactions, score)
 
 if __name__=='__main__':
     print grade(student_answers, correct_answers)
