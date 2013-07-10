@@ -144,7 +144,7 @@ def grade_problem_and_report(request, session_id, problem_guid):
         score = float(result['score']) * points
 
         # TODO: duration, submissionCountkk
-        TPIUtils.submit_outcome(launch_data, problem_guid=problem_guid, score=score, duration=700, submissionCount=1)
+        TPIUtils.submit_outcome(launch_data, problemNumber=pnum, problem_guid=problem_guid, score=score, duration=700, submissionCount=1)
     # TODO: test if submission was successful
     return CorsHttpResponse(json.dumps(result), 200)
 
