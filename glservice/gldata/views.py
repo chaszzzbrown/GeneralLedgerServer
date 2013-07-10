@@ -135,8 +135,16 @@ def grade_problem_and_report(request, session_id, problem_guid):
     except Exception as e:
         return CorsHttpResponse(str(e), 400)
 
-    # TODO: score, duration, submissionCount
-    TPIUtils.submit_outcome(launch_data, problem_guid=problem_guid, score=1, duration=700, submissionCount=1)
+    if session.launch_mode == 'do':
+        try:
+            pnum, points = session.problem_assignment_info(problem_guid)
+        except TypeError:
+            return CorsHttpResponse('Points not found for problem guid ' + problem_guid, 400)
+
+        score = float(result['score']) * points
+
+        # TODO: duration, submissionCountkk
+        TPIUtils.submit_outcome(launch_data, problem_guid=problem_guid, score=score, duration=700, submissionCount=1)
     # TODO: test if submission was successful
     return CorsHttpResponse(json.dumps(result), 200)
 
