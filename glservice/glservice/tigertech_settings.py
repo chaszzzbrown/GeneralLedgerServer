@@ -5,6 +5,9 @@ LAUNCH_URL = 'http://gldata.redhillstudios.com/gllaunch/toolLaunch/'
 TPI_SHARED_SECRET = "test"
 APP_REDIRECT_URL = "http://ledger.redhillstudios.com/deliverables/generalLedger"     # please to exclude trailing slash!!!
 
+OUTCOMES_URL = 'http://cert.isb.lift.pearsoncmg.com/v1/dataexchange/tpi/submit'
+OUTCOMES_USER = 'appuser'
+OUTCOMES_PW = 'appuser1'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
