@@ -89,7 +89,7 @@ def grade(student_answers, correct_answers):
     else:
         score = max(0, float(transactionsCorrect - transactionsIncorrect)) / len(correct_answers)
 
-    return Results(rowStatus, transactionsCorrect, transactionsIncorrect, expectedTransactions, score)
+    return Results(rowStatus, expectedTransactions, transactionsCorrect, transactionsIncorrect, score)
 
 if __name__=='__main__':
     print grade(student_answers, correct_answers)
