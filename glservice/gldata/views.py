@@ -98,8 +98,8 @@ def get_problem_definition(request, problem_guid):
         return response
     
     
-    return CorsHttpResponse('{"problem_data":"'+problem.problem_data+'",',
-                            '"correct_data":"'+problem.correct_data+'"}')
+    return CorsHttpResponse('{"problem_data":'+problem.problem_data+','
+                            '"correct_data":'+problem.correct_data+'}', 200)
 
 def get_problem_list(request):
     try:
