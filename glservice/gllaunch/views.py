@@ -43,3 +43,18 @@ def tool_launch(request):
         return redirect(settings.APP_REDIRECT_URL+'/#/'+session.session_id+'/')
     else:
         return HttpResponse('Unauthorized', status=401)
+
+@csrf_exempt
+def tool_launch_with_outcome(request):
+    launch_data = {}
+    for k,v in request.POST.items():
+        launch_data[k]=v
+
+    if TPIUtils.has_valid_signature(launch_data):
+        session = SessionData.getOrCreateSession(launch_data)
+        import random
+        score = random.uniform(1, 10)
+        TPIUtils.submit_outcome(launch_data, problemNumber=1, problem_guid=launch_data['custom_target_1'], score=score, duration=700, submissionCount=1)
+        return redirect(settings.APP_REDIRECT_URL+'/#/'+session.session_id+'/')
+    else:
+        return HttpResponse('Unauthorized', status=401)

@@ -13,6 +13,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^gllaunch/echo_test/', echo_LTI_vars),
     url(r'^gllaunch/toolLaunch/', tool_launch),
+    url(r'^calaunch/echo_test/', echo_LTI_vars),
+    url(r'^calaunch/toolLaunch/', tool_launch_with_outcome),
     
     # Examples:
     # url(r'^$', 'glservice.views.home', name='home'),
