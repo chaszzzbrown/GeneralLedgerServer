@@ -76,19 +76,29 @@ def put_problem_definition(request, problem_guid):
     problem, created = ProblemDefinition.objects.get_or_create(problem_guid=problem_guid)
     
     try:
-        problem.problem_data = request.POST['problem_data']
-    except KeyError:
-        pass
+        json.loads(request.body)
+    except ValueError:
+        return CorsHttpResponse('{"status":"error", "details":"Problem data is not valid JSON"}', 400)
 
+    problem.problem_data = request.body
+    problem.save();
+
+    return CorsHttpResponse('OK', 200)
+    
+@csrf_exempt
+def put_solution(request, problem_guid):
+    
+    problem, created = ProblemDefinition.objects.get_or_create(problem_guid=problem_guid)
+    
     try:
-        problem.correct_data = request.POST['correct_data']
-    except KeyError:
-        pass
-    
-    problem.save()
-    
-    return CorsHttpResponse('OK')
-    
+        json.loads(request.body)
+    except ValueError:
+        return CorsHttpResponse('{"status":"error", "details":"Problem data is not valid JSON"}', 400)
+
+    problem.correct_data = request.body
+    problem.save();
+
+    return CorsHttpResponse('OK', 200)
 
 def get_problem_definition(request, problem_guid):
     try:
@@ -100,6 +110,18 @@ def get_problem_definition(request, problem_guid):
     
     return CorsHttpResponse('{"problem_data":'+problem.problem_data+','
                             '"correct_data":'+problem.correct_data+'}', 200)
+
+@csrf_exempt
+def delete_problem_definition(request, problem_guid):
+    try:
+        problem = ProblemDefinition.objects.get(problem_guid=problem_guid)
+    except SessionData.DoesNotExist:
+        response = CorsHttpResponse('{"status":"error", "details":"no matching problem_guid for %s"}' % problem_guid, 404)
+        return response
+    
+    problem.delete()
+    
+    return CorsHttpResponse('OK', 200)
 
 def get_problem_list(request):
     try:

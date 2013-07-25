@@ -15,7 +15,9 @@ urlpatterns = patterns('',
 
     url(r'^create_problem_definition/(?P<problem_guid>[\w\-]+)/', create_problem_definition),
     url(r'^put_problem_definition/(?P<problem_guid>[\w\-]+)/', put_problem_definition),
+    url(r'^put_solution/(?P<problem_guid>[\w\-]+)/', put_solution),
     url(r'^get_problem_definition/(?P<problem_guid>[\w\-]+)/', get_problem_definition),
+    url(r'^delete_problem_definition/(?P<problem_guid>[\w\-]+)/', delete_problem_definition),
     
     url(r'^get_problem_list/', get_problem_list),
     url(r'^get_problem/(?P<problem_guid>[\w\-]+)/', get_problem),
