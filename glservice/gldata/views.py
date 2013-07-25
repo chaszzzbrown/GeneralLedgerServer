@@ -130,8 +130,12 @@ def get_problem_list(request):
         problems = [];
 
     def problem_data(p):
-        jso = json.loads(p.problem_data)
-        return {'guid': p.problem_guid, 'title': jso['title']}
+        try:
+            jso = json.loads(p.problem_data)
+            return {'guid': p.problem_guid, 'title': jso['title']}
+        except:
+            # Don't die just because one problem is bad
+            pass
 
     return CorsHttpResponse(json.dumps([problem_data(p) for p in problems]))
     
