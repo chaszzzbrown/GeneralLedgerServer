@@ -129,7 +129,15 @@ def get_problem_list(request):
     except SessionData.DoesNotExist:
         problems = [];
 
-    return CorsHttpResponse('[' + ','.join(p.problem_data for p in problems) + ']')
+    def problem_data(p):
+        try:
+            jso = json.loads(p.problem_data)
+            return {'guid': p.problem_guid, 'title': jso['title']}
+        except:
+            # Don't die just because one problem is bad
+            pass
+
+    return CorsHttpResponse(json.dumps([problem_data(p) for p in problems]))
     
 def get_problem(request, problem_guid):
     try:
