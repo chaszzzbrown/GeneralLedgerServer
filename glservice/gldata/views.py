@@ -73,15 +73,14 @@ def create_problem_definition(request, problem_guid):
 @csrf_exempt
 def put_problem_definition(request, problem_guid):
     
-    problem, created = ProblemDefinition.objects.get_or_create(problem_guid=problem_guid)
+    ProblemDefinition.objects.get_or_create(problem_guid=problem_guid)
     
     try:
-        json.loads(request.body)
+        data = json.loads(request.body)
     except ValueError:
         return CorsHttpResponse('{"status":"error", "details":"Problem data is not valid JSON"}', 400)
 
-    problem.problem_data = request.body
-    problem.save();
+    ProblemDefinition.objects.filter(problem_guid=problem_guid).update(problem_data=request.body);
 
     return CorsHttpResponse('OK', 200)
     
@@ -95,8 +94,7 @@ def put_solution(request, problem_guid):
     except ValueError:
         return CorsHttpResponse('{"status":"error", "details":"Problem data is not valid JSON"}', 400)
 
-    problem.correct_data = request.body
-    problem.save();
+    ProblemDefinition.objects.filter(problem_guid=problem_guid).update(correct_data=request.body);
 
     return CorsHttpResponse('OK', 200)
 
