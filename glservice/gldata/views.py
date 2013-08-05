@@ -132,7 +132,8 @@ def get_problem_list(request):
     def problem_data(p):
         try:
             jso = json.loads(p.problem_data)
-            return {'guid': p.problem_guid, 'title': jso['title']}
+            jso['guid'] = p.problem_guid
+            return jso
         except:
             # Don't die just because one problem is bad
             pass
