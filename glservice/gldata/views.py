@@ -146,6 +146,23 @@ def get_problem(request, problem_guid):
         return response
     
     return CorsHttpResponse(problem.problem_data)
+
+@csrf_exempt
+def put_problem_and_solution(request, problem_guid):
+    
+    problem, created = ProblemDefinition.objects.get_or_create(problem_guid=problem_guid)
+
+    try:
+        data = json.loads(request.body)
+    except ValueError:
+        return CorsHttpResponse('{"status":"error", "details":"Problem data is not valid JSON"}', 400)
+
+    problem.problem_data = json.dumps(data['problem'])
+    problem.correct_data = json.dumps(data['solution'])
+
+    problem.save()
+
+    return CorsHttpResponse('OK', 200)
     
 @csrf_exempt
 def grade_problem_and_report(request, session_id, problem_guid):
