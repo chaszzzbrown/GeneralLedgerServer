@@ -37,7 +37,7 @@ def collect_transactions(entry_list):
 
 def entriesMatch(e1, e2):
     for k in ['date', 'account', 'amount']:
-        if e1[k]!=e2[k]:
+        if str(e1[k]) != str(e2[k]):
             return False
     return True
 
