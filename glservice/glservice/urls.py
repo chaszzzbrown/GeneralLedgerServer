@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     url(r'^gllaunch/echo_test/', echo_LTI_vars),
     url(r'^gllaunch/toolLaunch/', tool_launch),
     url(r'^econlaunch/echo_test/', echo_LTI_vars),
-    url(r'^econlaunch/toolLaunch/', tool_launch_with_outcome),
+    url(r'^econlaunch/toolLaunch/', econ_tool_launch),
     
     # Examples:
     # url(r'^$', 'glservice.views.home', name='home'),

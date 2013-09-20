@@ -45,7 +45,7 @@ def tool_launch(request):
         return HttpResponse('Unauthorized', status=401)
 
 @csrf_exempt
-def tool_launch_with_outcome(request):
+def econ_tool_launch(request):
     launch_data = {}
     for k,v in request.POST.items():
         launch_data[k]=v
@@ -57,6 +57,12 @@ def tool_launch_with_outcome(request):
         pnum = launch_data['custom_currentquestion']
         guid = launch_data['custom_target_' + pnum]
         TPIUtils.submit_outcome(launch_data, problemNumber=pnum, problem_guid=guid, score=score, duration=700, submissionCount=1)
-        return redirect(settings.APP_REDIRECT_URL+'/#/'+session.session_id+'/')
+        if guid == "unemployment":
+            return redirect(settings.APP_REDIRECT_URL_UE)
+        elif guid == "comparative_advantage":
+            return redirect(settings.APP_REDIRECT_URL_CA)
+        else:
+            return HttpResponse('Error: no application ' + guid, 404)
+
     else:
         return HttpResponse('Unauthorized', status=401)
