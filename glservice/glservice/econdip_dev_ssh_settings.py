@@ -1,7 +1,7 @@
 # Django settings for glservice project.
 
 LAUNCH_METHOD = 'POST'
-LAUNCH_URL = 'http://gldata.redhillstudios.com/gllaunch/toolLaunch/'
+LAUNCH_URL = 'http://dev.econdip.pearsoncmg.com/econservice/econlaunch/toolLaunch/'
 TPI_SHARED_SECRET = "test"
 APP_REDIRECT_URL = "http://ledger.redhillstudios.com/deliverables/generalLedger"     # please to exclude trailing slash!!!
 
@@ -21,11 +21,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'generalledger',                      # Or path to database file if using sqlite3.
-        'USER': 'generalledger',                      # Not used with sqlite3.
-        'PASSWORD': 'generalLedger',                  # Not used with sqlite3.
-        'HOST': 'www.redhillstudios.com',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
+        'NAME': 'econdip',                      # Or path to database file if using sqlite3.
+        'USER': 'econdipusr',                      # Not used with sqlite3.
+        'PASSWORD': 'Qior98ojH^Us65u',                  # Not used with sqlite3.
+        'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3309',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
