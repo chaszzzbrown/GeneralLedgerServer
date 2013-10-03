@@ -21,6 +21,16 @@ def CorsHttpResponse(response, status=200):
     httpResponse.status_code = status
     return httpResponse
 
+def handle_options(fn):
+    def decorate(*args, **kwargs):
+        request = args[0]
+        if request.method.lower() == 'options':
+            return CorsHttpResponse('OK')
+        else:
+            return fn(*args, **kwargs)
+    return decorate
+
+@handle_options
 def get_session_data(request, session_id):
     try:
         session = SessionData.objects.get(session_id=session_id)
@@ -44,6 +54,7 @@ def get_session_data(request, session_id):
     return CorsHttpResponse(json.dumps(package))
 
 @csrf_exempt
+@handle_options
 def put_session_state_data(request, session_id):
     try:
         session = SessionData.objects.get(session_id=session_id)
@@ -63,6 +74,7 @@ def put_session_state_data(request, session_id):
     return CorsHttpResponse('OK')
     
 @csrf_exempt
+@handle_options
 def create_problem_definition(request, problem_guid):
     try:
         problem = ProblemDefinition.objects.create(problem_guid=problem_guid)
@@ -71,6 +83,7 @@ def create_problem_definition(request, problem_guid):
         return response
     
 @csrf_exempt
+@handle_options
 def put_problem_definition(request, problem_guid):
     
     ProblemDefinition.objects.get_or_create(problem_guid=problem_guid)
@@ -85,6 +98,7 @@ def put_problem_definition(request, problem_guid):
     return CorsHttpResponse('OK', 200)
     
 @csrf_exempt
+@handle_options
 def put_solution(request, problem_guid):
     
     problem, created = ProblemDefinition.objects.get_or_create(problem_guid=problem_guid)
@@ -98,6 +112,7 @@ def put_solution(request, problem_guid):
 
     return CorsHttpResponse('OK', 200)
 
+@handle_options
 def get_problem_definition(request, problem_guid):
     try:
         problem = ProblemDefinition.objects.get(problem_guid=problem_guid)
@@ -110,6 +125,7 @@ def get_problem_definition(request, problem_guid):
                             '"correct_data":'+problem.correct_data+'}', 200)
 
 @csrf_exempt
+@handle_options
 def delete_problem_definition(request, problem_guid):
     try:
         problem = ProblemDefinition.objects.get(problem_guid=problem_guid)
@@ -121,6 +137,7 @@ def delete_problem_definition(request, problem_guid):
     
     return CorsHttpResponse('OK', 200)
 
+@handle_options
 def get_problem_list(request):
     try:
         problems = ProblemDefinition.objects.all()
@@ -138,6 +155,7 @@ def get_problem_list(request):
 
     return CorsHttpResponse(json.dumps([problem_data(p) for p in problems]))
     
+@handle_options
 def get_problem(request, problem_guid):
     try:
         problem = ProblemDefinition.objects.get(problem_guid=problem_guid)
@@ -148,6 +166,7 @@ def get_problem(request, problem_guid):
     return CorsHttpResponse(problem.problem_data)
 
 @csrf_exempt
+@handle_options
 def put_problem_and_solution(request, problem_guid):
     
     problem, created = ProblemDefinition.objects.get_or_create(problem_guid=problem_guid)
@@ -165,6 +184,7 @@ def put_problem_and_solution(request, problem_guid):
     return CorsHttpResponse('OK', 200)
     
 @csrf_exempt
+@handle_options
 def grade_problem_and_report(request, session_id, problem_guid):
     try:
         session = SessionData.objects.get(session_id=session_id)
@@ -204,6 +224,7 @@ def grade_problem_and_report(request, session_id, problem_guid):
 
 
 @csrf_exempt
+@handle_options
 def grade_problem(request, problem_guid):
     try:
         problem = ProblemDefinition.objects.get(problem_guid=problem_guid)
