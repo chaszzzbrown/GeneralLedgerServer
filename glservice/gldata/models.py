@@ -104,18 +104,11 @@ class ProblemDefinition(models.Model):
     def __unicode__(self):
         return self.problem_guid
 
-    def grade_response(self, student_answers_json):
+    def grade_response(self, student_answers):
         '''
         returns a tuple of valid=True, JSON encoded results
         or a tuple of valid=False, some error message
         '''
-        try:
-            student_answers = json.loads(student_answers_json)
-            assert isinstance(student_answers, list)
-        except ValueError:
-            raise ValueError("student_answers is not valid JSON")
-        except AssertionError:
-            raise ValueError("student_answers is not a list of objects")
 
         try:
             correct_answers = json.loads(self.correct_data)
