@@ -42,6 +42,9 @@ class SessionData(models.Model):
             session = SessionData.objects.get(session_id=session_id)
             session.launch_mode = launch_dict['custom_mode']
             session.launch_data = json.dumps(launch_dict)
+            # clear problem state data on preview mode
+            if session.launch_mode == 'preview':
+                session.problem_state_data = '{}'
             session.save()
             return session
         except SessionData.DoesNotExist:
