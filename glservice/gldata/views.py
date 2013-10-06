@@ -203,7 +203,6 @@ def grade_problem_and_report(request, session_id, problem_guid):
         return response
 
     try:
-        print 'REQUEST:', request
         student_data = json.loads(request.body)
     except ValueError:
         raise ValueError("student_data is not valid JSON")

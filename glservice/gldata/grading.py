@@ -84,11 +84,10 @@ def grade(student_answers, correct_answers):
 
         for entry in trans1:
             rowStatus[entry['row']] = hasMatch
-            
     if submittedTransactions <= expectedTransactions:
-        score = float(transactionsCorrect) / expectedTransactions
+        score = float(transactionsCorrect) / max(1, expectedTransactions)
     else:
-        score = max(0, float(transactionsCorrect - transactionsIncorrect)) / expectedTransactions
+        score = max(0, float(transactionsCorrect - transactionsIncorrect)) / max(1, expectedTransactions)
 
     return Results(rowStatus, expectedTransactions, transactionsCorrect, transactionsIncorrect, score)
 
