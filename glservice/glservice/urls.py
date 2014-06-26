@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'glservice.views.home', name='home'),
     
     url(r'^gldata/', include('gldata.urls')),
+    url(r'^glservice/gldata/', include('gldata.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
